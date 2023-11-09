@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"reflect"
 	"time"
 
 	g "github.com/onsi/ginkgo/v2"
@@ -105,6 +106,10 @@ var _ = g.Describe("[sig-auth][Feature:LDAP] LDAP IDP", func() {
 
 		g.By("ensuring that you cannot authenticate with a bad password")
 		_, err = tokenOpts(userName, badPass).RequestToken()
+                if err != nil {
+                        g.By(fmt.Sprintf("xxxxxxxx type: %s xxxxxxxxx", reflect.TypeOf(err)))
+                }
+	
 		o.Expect(err).Should(o.MatchError("challenger chose not to retry the request"))
 
 		g.By("authenticating with LDAP user")

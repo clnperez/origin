@@ -3,9 +3,11 @@ package oauth
 import (
 	"context"
 	"crypto/sha256"
+	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"reflect"
 	"strings"
 
 	g "github.com/onsi/ginkgo/v2"
@@ -102,6 +104,16 @@ func testTokenFlow(oc *exutil.CLI, newRequestTokenOptions oauthserver.NewRequest
 	requestTokenOptions.OsinConfig.RedirectUrl = client.RedirectURIs[0]
 	// request token
 	token, err := requestTokenOptions.RequestToken()
+        g.By("testTokenFlow xxxxxxx -------------- xxxxxxxxxxx")
+        cvfErrIfc := reflect.ValueOf(err).Interface()
+        if cvfErr, ok := cvfErrIfc.(*tls.CertificateVerificationError); ok {
+                g.By(cvfErr.Error())
+                for _, cert := range(cvfErr.UnverifiedCertificates) {
+                        g.By(fmt.Sprintf("Issuer: %s", cert.Issuer.String()))
+                        g.By(fmt.Sprintf("Subject: %s", cert.Subject.String()))
+                }
+        }
+
 	o.Expect(err).ToNot(o.HaveOccurred())
 	// Make sure we can use the token, and it represents who we expect
 	userConfig := *rest.AnonymousClientConfig(oc.AdminConfig())

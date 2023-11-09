@@ -492,6 +492,7 @@ func determineImageFromRelease(oc *exutil.CLI) (string, error) {
 }
 
 func newRequestTokenOptions(config *restclient.Config, oauthServerURL, oauthClientName, username, password string) *tokencmd.RequestTokenOptions {
+	e2e.Logf("xxxxxxxx config.CAData: %s", config.CAData)
 	options := tokencmd.NewRequestTokenOptions(config, nil, username, password, false)
 	// supply the info the client would otherwise ask from .well-known/oauth-authorization-server
 	oauthClientConfig := &osincli.ClientConfig{
